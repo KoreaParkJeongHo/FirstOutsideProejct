@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- 생성 package 이름 -->
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.daou</groupId>
+    <artifactId>jeongho</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <!-- 사용 API dependecy추가 -->
+    <dependencies>
+        <dependency>
+            <groupId>net.sf.staf</groupId>
+            <artifactId>jstaf</artifactId>
+            <version>3.4.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.java.dev.vcc.thirdparty</groupId>
+            <artifactId>xen-api</artifactId>
+            <version>6.2.0-3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>xenService</finalName>
+
+        <outputDirectory>${project.build.directory}/aa/STAF-INF/classes</outputDirectory> <!--build된 directory를 STAF-INF/classes경로 밑에 저장 -->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <id>unpack-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/aa/STAF-INF/classes</outputDirectory> <!--dependency에 추가된 내용의 build된 내용이 저장될 경로 -->
+                            <excludes>META-INF/**</excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Jar파일 생성 & MANIFEST.MF파일 설정 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <classesDirectory>${project.build.directory}/aa</classesDirectory><!--해당 폴더밑의 내용을 Jar파일에 묶어준다 -->
+                    <archive>
+                        <manifestSections>
+                            <manifestSection>
+                                <name>staf/service/info</name>
+                                <manifestEntries>
+                                    <Service-Class>org.daou.Core.MyXenService</Service-Class>
+                                </manifestEntries>
+                            </manifestSection>>
+                        </manifestSections>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <instrumentation>
+                        <excludes>
+                            <exclude>com/xensource/xenapi/*</exclude>
+                        </excludes>
+                    </instrumentation>
+                    <formats>
+                        <format>html</format>
+                        <format>xml</format>
+                    </formats>
+                    <outputDirectory>${project.build.directory}/site/cobertura</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>cobertura</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+
+    <properties>
+        <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
+        <!--<maven.test.skip>true</maven.test.skip>-->
+    </properties>
+
+</project>
